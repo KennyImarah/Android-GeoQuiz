@@ -1,5 +1,6 @@
 package com.example.geoquiz;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -10,9 +11,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+//    add tag constant
+    private static final String TAG = "MainActivity";
+    private static final String KEY_INDEX = "index";
+
     private Button mTrueButton;
     private Button mFalseButton;
     private Button mNextButton;
+    private Button mPreviousButton;
     private TextView mQuestionTextView;
 
     private Question[] mQuestionBank = new Question[]{
@@ -25,35 +31,31 @@ public class MainActivity extends AppCompatActivity {
             new Question(R.string.question_canada, true),
     };
 
-    //declear a variable for current index
+    //declare a variable for current index
     private int mCurrentIndex = 0;
 
+    //override onCreate method
     @Override
     //method to hold instance value saved
     protected void onCreate(Bundle savedInstanceState) {
-        //save instance value in savedInstanceState
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate(Bundle)called");
         //set content view
         setContentView(R.layout.activity_main);
 
+        if (savedInstanceState !=null){
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+        }
         //set questions text view in a field
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
-        //set question current value in a field
-//        int question = mQuestionBank[mCurrentIndex].getTextResId();
-        //set question in view
-//        mQuestionTextView.setText(question);
 
         //set True view value in mTrueButton
         mTrueButton = (Button) findViewById(R.id.true_button);
         //set click listener on mTrueButton
-        mTrueButton.setOnClickListener(new View.OnClickListener() { //onClickListener response value set set in parenthese.
+        mTrueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 // Make Toast to set response to this correct value
-//                Toast.makeText(MainActivity.this, R.string.correct_toast,
-//                        //set Toast length and call it to show
-//                        Toast.LENGTH_SHORT).show();
                 checkAnswer(true);
             }
         });
@@ -63,14 +65,10 @@ public class MainActivity extends AppCompatActivity {
         mFalseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 // Make Toast to set response to this Incorrect value
-//                Toast.makeText(MainActivity.this,
-////                        R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
                 checkAnswer(false);
             }
         });
-
         //set Next view value in mNextButton
         mNextButton = (Button) findViewById(R.id.next_button);
         //set click listener response for mNextButton
@@ -79,14 +77,60 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //set value in mCurrentIndex at increment with modulus mQuestionBank length
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
-                //get the current value of the index position
-//                int question = mQuestionBank[mCurrentIndex].getTextResId();
-                //set question view
-//                mQuestionTextView.setText(question);
                 updateQuestion();
             }
         });
+
+        //previous button attempt
+        mPreviousButton = (Button) findViewById(R.id.previous_button);
+        //set click listener response for mNextButton
+        mPreviousButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //set value in mCurrentIndex at decrement with modulus mQuestionBank length
+                mCurrentIndex = (mCurrentIndex - 1) % mQuestionBank.length;
+                updateQuestion();
+            }
+        });
+
         updateQuestion();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart() called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG,"onResume() called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause() called");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.i(TAG, "onSaveInstanceState");
+//        savedInstanceState.putInt(KEY_INDEX,mCurrentIndex);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG,"onStop() called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy() called");
     }
 
     //update question method
@@ -99,12 +143,12 @@ public class MainActivity extends AppCompatActivity {
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
 
         int messageResId = 0;
+
         if (userPressTrue == answerIsTrue) {
             messageResId = R.string.correct_toast;
         } else {
             messageResId = R.string.incorrect_toast;
         }
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
-
     }
 }
