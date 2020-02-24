@@ -157,10 +157,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
-//        savedInstanceState.putInt(KEY_INDEX,mCurrentIndex);
+        savedInstanceState.putInt(KEY_INDEX,mCurrentIndex);
     }
 
     @Override
@@ -168,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         Log.d(TAG,"onStop() called");
     }
+
 
     @Override
     protected void onDestroy() {
